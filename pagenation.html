@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Just to check</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <table class="table table-striped text-center border-dark">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>email</th>
+                    </tr>
+                <tbody class="t_body">
+                </tbody>
+                </thead>
+            </table>
+        </div>
+            <div class="row justify-content-around">
+                <div class="btn-toolbar"></div>
+                <div class="simple"><input type="text"  placeholder = 'Enter page' class="btn btn-light border-info"></div>
+            </div>
+    </div>
+    <script>
+        let url = 'https://raw.githubusercontent.com/Rajavasanthan/jsondata/master/pagenation.json';
+        fetch(url).then(res=>{return res.json()}).then(data=>{
+            let tbody = document.querySelector('.t_body');
+            let toolbar = document.querySelector('.btn-toolbar');
+            function createtable(page)
+            {
+                tbody.innerHTML = ``;
+                for(let i of data.slice(page*5,page*5+5))
+                {
+                    tbody.innerHTML +=`<tr>
+                        <td>${i.id}</td>
+                        <td>${i.name}</td>
+                        <td>${i.email}</td>
+                        </tr>`
+                }
+            }
+            function btncreate(page=1)
+            {
+                toolbar.innerHTML = ``; 
+                toolbar.innerHTML = `<button class="btn btn-outline-info mx-1" type="button" value = 1>first</button>`;
+                if(page>1)
+                toolbar.innerHTML += `<button class="btn btn-outline-info unichange mx-1" type="button" value='-1'>prev</button>`;
+                let btngrp = document.createElement('div');
+                btngrp.className = 'btn-group';
+                toolbar.appendChild(btngrp);
+                for(let i=page;i<page+5;i++)
+                {
+                    btngrp.innerHTML += `<button class="btn btn-outline-info mx-1 rounded" type="button" value = ${i}>${i}</button>`;
+                }
+                if(page+5<Math.ceil(data.length/5))
+                toolbar.innerHTML += `<button class="btn btn-outline-info unichange mx-1" type="button" value = '1'>next</button>`;
+                toolbar.innerHTML += `<button class="btn btn-outline-info mx-1" type="button" value = ${Math.ceil(data.length/5)}>last</button>`
+            }
+            let preval = 0;
+            createtable(preval);
+            btncreate(preval+1);
+            toolbar.addEventListener('click',(event)=>{
+                if(event.target.value != undefined)
+                {
+                    if(event.target.className.includes('unichange'))   
+                    {
+                        preval +=  Number(event.target.value);
+                    }
+                    else{
+                        preval = Number(event.target.value);
+                    }
+                    if(preval+5<=Math.ceil(data.length/5))
+                        btncreate(preval);
+                    else
+                        btncreate(Math.ceil(data.length/5)-4);
+                    createtable(preval-1);
+
+                }
+            })
+            document.querySelector('input').addEventListener('keyup',(event)=>{
+                if(Number(event.target.value)==0)
+                return;
+                if(!isNaN(Number(event.target.value)) && event.target.value != ' ' && Number(event.target.value)<9){
+                    preval = Number(event.target.value);
+                    createtable(preval-1);
+                    btncreate(preval);
+            }
+            })
+        })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
