@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Just to check</title>
+    <title>Table Pagenation</title>
+    <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS_Wud2t6FkQ0svauf470DOoSgHn-632ZqrZtMP-ilpoSM4rSxF&usqp=CAU" type="image/x-icon">
 </head>
 <body>
     <div class="container">
@@ -23,7 +24,7 @@
         </div>
             <div class="row justify-content-around">
                 <div class="btn-toolbar"></div>
-                <div class="simple"><input type="text"  placeholder = 'Enter page' class="btn btn-light border-info"></div>
+                <div class="simple"><input type="text"  placeholder = 'Enter page to go' class="btn btn-light border-info m-2"></div>
             </div>
     </div>
     <script>
@@ -46,9 +47,10 @@
             function btncreate(page=1)
             {
                 toolbar.innerHTML = ``; 
-                toolbar.innerHTML = `<button class="btn btn-outline-info mx-1" type="button" value = 1>first</button>`;
+                if(page>5)
+                toolbar.innerHTML = `<button class="btn btn-outline-info" type="button" value = 1>first</button>`;
                 if(page>1)
-                toolbar.innerHTML += `<button class="btn btn-outline-info unichange mx-1" type="button" value='-1'>prev</button>`;
+                toolbar.innerHTML += `<button class="btn btn-outline-info unichange ml-1" type="button" value='-1'>prev</button>`;
                 let btngrp = document.createElement('div');
                 btngrp.className = 'btn-group';
                 toolbar.appendChild(btngrp);
@@ -57,8 +59,9 @@
                     btngrp.innerHTML += `<button class="btn btn-outline-info mx-1 rounded" type="button" value = ${i}>${i}</button>`;
                 }
                 if(page+5<Math.ceil(data.length/5))
-                toolbar.innerHTML += `<button class="btn btn-outline-info unichange mx-1" type="button" value = '1'>next</button>`;
-                toolbar.innerHTML += `<button class="btn btn-outline-info mx-1" type="button" value = ${Math.ceil(data.length/5)}>last</button>`
+                toolbar.innerHTML += `<button class="btn btn-outline-info unichange mr-1 mt-1" type="button" value = '1'>next</button>`;
+                if(page<Math.ceil(data.length/5)-5)
+                toolbar.innerHTML += `<button class="btn btn-outline-info mt-1" type="button" value = ${Math.ceil(data.length/5)}>last</button>`
             }
             let preval = 0;
             createtable(preval);
