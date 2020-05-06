@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function randomint(min, max) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
+function genrandword(obj) {
+	let rand = Object.keys(obj)[randomint(0, Object.keys(obj).length)];
+	if (rand.length > 9) return genrandword(obj);
+	if (rand.includes('-')) return getrandomword(obj);
+	return rand;
+}
+function getindex(lst, char) {
+	let out = [];
+	for (let i = 0; i < lst.length; i++) {
+		if (lst[i] == char) out.push(i);
+	}
+	return out.length ? out : '-1';
+}
+document.addEventListener('DOMContentLoaded', () => {
+	fetch('https://raw.githubusercontent.com/matthewreagan/WebstersEnglishDictionary/master/dictionary.json')
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(Object.keys(data).length);
+			let randomword = genrandword(data).toUpperCase();
+			console.log(randomword);
+			let parent = document.createElement('div');
+			parent.className = 'parent';
+			document.body.appendChild(parent);
+			document.body.style.display = 'grid';
+			document.body.style.placeItems = 'center';
+			parent = document.querySelector('.parent');
+			parent.style.marginTop = '5rem';
+			parent.style.display = 'flex';
+			parent.style.flexDirection = 'column';
+			parent.style.alignItems = 'center';
+			parent.style.width = '70vw';
+			parent.style.height = '70vw';
+			let inpspan = document.createElement('span');
+			parent.appendChild(inpspan);
+			for (let i = 0; i < randomword.length; i++) {
+				let button = document.createElement('input');
+				button.type = 'button';
+				button.className = 'inpbtn';
+				inpspan.appendChild(button);
+				button.style.width = '5vw';
+				button.style.height = '5vw';
+				button.style.margin = '0.2rem';
+				button.style.cursor = 'pointer';
+				button.style.border = 'none';
+				button.style.borderBottom = '1px solid black';
+				button.style.backgroundColor = 'white';
+				button.style.color = 'darkblue';
+				button.value = '';
+			}
+			let aplbhabets = [];
+			for (var i = 'A'.charCodeAt(0); i <= 'Z'.charCodeAt(0); i++) {
+				aplbhabets.push(String.fromCharCode(i));
+			}
+			let buttons = document.createElement('div');
+			parent.appendChild(buttons);
+			buttons.className = 'buttons';
+			buttons.style.margin = '2rem';
+			for (let i of aplbhabets) {
+				let button = document.createElement('input');
+				button.type = 'button';
+				button.value = `${i}`;
+				button.className = 'btn';
+				buttons.appendChild(button);
+				button.style.boxShadow = 'none';
+				button.style.backgroundColor = 'lightblue';
+				button.style.color = 'white';
+				button.style.border = 'none';
+				button.style.fontSize = '2vw ';
+			}
+			let btn = document.querySelectorAll('.btn');
+			btn.forEach((v) => {
+				v.style.borderRadius = '50%';
+				v.style.width = '5vw';
+				v.style.height = '5vw';
+				v.style.margin = '0.2rem';
+				v.style.cursor = 'pointer';
+			});
+			let para = document.createElement('p');
+			parent.appendChild(para);
+			para.style.fontSize = '4rem';
+			para.style.margin = '2rem';
+			para.style.letterSpacing = '0.2rem';
+			let replay = document.createElement('input');
+			replay.type = 'button';
+			replay.value = 'play Again';
+			replay.style.fontSize = '2rem';
+			parent.appendChild(replay);
+			replay.style.visibility = 'hidden';
+			let chance = 0;
+			buttons.addEventListener('click', (event) => {
+				console.log(event.target.value);
+				let input = Array.from(document.querySelectorAll('.inpbtn'));
+				if (event.target.value !== undefined) {
+					if (randomword.split('').includes(event.target.value)) {
+						event.target.style.backgroundColor = 'green';
+						event.target.style.color = 'white';
+						console.log(getindex(randomword.split(''), event.target.value));
+						getindex(randomword.split(''), event.target.value).forEach((i) => {
+							input[i].value = event.target.value;
+						});
+					} else {
+						event.target.style.backgroundColor = 'red';
+						event.target.style.color = 'white';
+						chance++;
+					}
+				}
+				if (chance > 5) window.location.reload();
+				if (chance == 5) {
+					para.style.color = 'red';
+					para.textContent = 'Your Man is HANGED';
+					h2 = document.createElement('h2');
+					para.appendChild(h2);
+					h2.style.color = 'black';
+					h2.textContent += `word is ${randomword}`;
+					replay.style.visibility = 'visible';
+					replay.addEventListener('click', () => {
+						window.location.reload();
+					});
+				} else {
+					para.style.color = 'blue';
+					para.textContent = `You still have ${5 - chance} chances`;
+				}
+				let totval = '';
+				input.forEach((v) => {
+					totval += v.value;
+				});
+				console.log(totval);
+				if (totval == randomword) {
+					para.style.color = 'green';
+					para.textContent = 'Your Man is SAFE';
+				}
+			});
+		});
+});
+
+    </script>
+    <title>task</title>
+</head>
+<body>
+</body>
+</html>
